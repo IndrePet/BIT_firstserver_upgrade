@@ -1,6 +1,31 @@
 import { file } from '../lib/file.js';
 import { utils } from '../lib/utils.js';
 
+const isValidService = (service) => {
+  const servicesKeysCount = 3;
+  if (
+    typeof service !== 'object' ||
+    Array.isArray(service) ||
+    service === null ||
+    Object.keys(service).length > servicesKeysCount ||
+    Object.keys(service).length < servicesKeysCount
+  ) {
+    return false;
+  }
+
+  // if (typeof service !== 'object'
+  //     || Object.keys(service).length > servicesKeysCount
+  //     || typeof service.icon !== 'string'
+  //     || service.icon === ''
+  //     || typeof service.title !== 'string'
+  //     || service.title === ''
+  //     || typeof service.description !== 'string'
+  //     || service.description === '') {
+  //     return false;
+  // }
+  return true;
+};
+
 async function servicesSection() {
   const getServicesData = async () => {
     const data = [];
@@ -24,21 +49,6 @@ async function servicesSection() {
     }
 
     return data;
-  };
-
-  const isValidService = (service) => {
-    if (
-      typeof service !== 'object' ||
-      typeof service.icon !== 'string' ||
-      service.icon === '' ||
-      typeof service.title !== 'string' ||
-      service.title === '' ||
-      typeof service.description !== 'string' ||
-      service.description === ''
-    ) {
-      return false;
-    }
-    return true;
   };
 
   const renderList = async () => {
@@ -70,4 +80,4 @@ async function servicesSection() {
             </section>`;
 }
 
-export { servicesSection };
+export { servicesSection, isValidService };

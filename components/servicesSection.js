@@ -12,8 +12,7 @@ const isValidService = (service) => {
   const servicesKeysCount = 3;
   const maxIconLength = 20;
   const maxTitleLength = 30;
-  const maxDescLength = 100;
-
+  const maxDescLength = 200;
   if (
     typeof service !== 'object' ||
     Array.isArray(service) ||

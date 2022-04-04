@@ -76,7 +76,7 @@ describe('Service icon', () => {
       })
     ).toBeFalsy();
   });
-  test('maksimalus ilgis string', () => {
+  test('maksimalaus ilgio string', () => {
     expect(
       isValidService({
         icon: 'a'.repeat(20),
@@ -131,7 +131,7 @@ describe('Service description', () => {
     expect(
       isValidService({
         icon: 'globe',
-        title: 'title',
+        title: 'Title',
         description: 1,
       })
     ).toBeFalsy();
@@ -140,7 +140,7 @@ describe('Service description', () => {
     expect(
       isValidService({
         icon: 'globe',
-        title: 'title',
+        title: 'Title',
         description: '',
       })
     ).toBeFalsy();
@@ -149,8 +149,8 @@ describe('Service description', () => {
     expect(
       isValidService({
         icon: 'globe',
-        title: 'title',
-        description: 'a'.repeat(101),
+        title: 'Title',
+        description: 'a'.repeat(201),
       })
     ).toBeFalsy();
   });
@@ -158,8 +158,8 @@ describe('Service description', () => {
     expect(
       isValidService({
         icon: 'globe',
-        title: 'title',
-        description: 'a'.repeat(100),
+        title: 'Title',
+        description: 'a'.repeat(200),
       })
     ).toBeTruthy();
   });
@@ -170,8 +170,8 @@ describe('Service objektas su pertekline informacija', () => {
     expect(
       isValidService({
         icon: 'globe',
-        title: 'title',
-        description: 'description',
+        title: 'Title',
+        description: 'Description',
         extra: true,
       })
     ).toBeFalsy();
@@ -188,7 +188,7 @@ describe('Service objektas su pertekline informacija', () => {
     expect(
       isValidService({
         icon: 'globe',
-        title: 'title',
+        title: 'Title',
         extra: true,
       })
     ).toBeFalsy();
@@ -197,9 +197,9 @@ describe('Service objektas su pertekline informacija', () => {
     expect(
       isValidService({
         icon: 'globe',
-        title: 'title',
-        description: 'description',
-        description: 'description 2',
+        title: 'Title',
+        description: 'Description',
+        description: 'Description 2',
       })
     ).toBeTruthy();
   });

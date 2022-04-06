@@ -1,4 +1,4 @@
-import { IsValid } from "../components/is-valid/IsValid.js";
+import { IsValid } from '../components/is-valid/IsValid.js';
 
 /*
 1) susirasti forma ir jos VISUS laukus
@@ -11,12 +11,12 @@ import { IsValid } from "../components/is-valid/IsValid.js";
 6b) jei serveris ne rado klaidu - END
 */
 
-const formDOM = document.querySelector(".form");
-const errorsDOM = formDOM.querySelector(".form-errors");
-const allInputsDOM = formDOM.querySelectorAll("input");
-const submitDOM = formDOM.querySelector("button");
+const formDOM = document.querySelector('.form');
+const errorsDOM = formDOM.querySelector('.form-errors');
+const allInputsDOM = formDOM.querySelectorAll('input');
+const submitDOM = formDOM.querySelector('button');
 
-submitDOM.addEventListener("click", (e) => {
+submitDOM.addEventListener('click', (e) => {
   e.preventDefault();
 
   const errors = [];
@@ -36,9 +36,9 @@ submitDOM.addEventListener("click", (e) => {
     formData.repass &&
     formData.password !== formData.repass
   ) {
-    errors.push("Nesutampa slaptazodziai");
+    errors.push('Nesutampa slaptazodziai');
   }
-  errorsDOM.innerText = errors.join("\r\n");
+  errorsDOM.innerText = errors.join('\r\n');
 
   if (errors.length === 0) {
     delete formData.repass;
@@ -50,7 +50,7 @@ submitDOM.addEventListener("click", (e) => {
         console.log(data);
       }
     };
-    xhttp.open("POST", formDOM.action, true);
+    xhttp.open('POST', formDOM.action, true);
     xhttp.send(JSON.stringify(formData));
   }
 });

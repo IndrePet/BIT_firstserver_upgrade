@@ -16,7 +16,7 @@ const errorsDOM = formDOM.querySelector('.form-errors');
 const allInputsDOM = formDOM.querySelectorAll('input');
 const submitDOM = formDOM.querySelector('button');
 
-submitDOM.addEventListener('click', (e) => {
+submitDOM.addEventListener('click', e => {
   e.preventDefault();
 
   const errors = [];
@@ -47,7 +47,12 @@ submitDOM.addEventListener('click', (e) => {
     xhttp.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
         const data = JSON.parse(this.responseText);
-        console.log(data);
+
+        if (data.status === 'Success') {
+          if (data.action.type === 'redirect') {
+            location.href = data.action.href;
+          }
+        }
       }
     };
     xhttp.open('POST', formDOM.action, true);

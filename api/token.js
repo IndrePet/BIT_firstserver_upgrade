@@ -103,6 +103,10 @@ handler._method.post = async (data, callback) => {
         id: tokenID,
         ...token,
       },
+      action: {
+        type: 'redirect',
+        href: '/',
+      },
     },
     {
       'Set-Cookie': cookies.join('; '),
@@ -129,6 +133,15 @@ handler._method.delete = (data, callback) => {
     action: 'DELETE',
     msg: 'TOKEN sekmingai istrintas is sistemos',
   });
+};
+
+handler._method.verify = async token => {
+  if (typeof token !== 'string' || token.length !== config.sessionTokenLength) {
+    return false;
+  }
+
+  const [readErr] = await file.read('token', token + '.json');
+  return !readErr;
 };
 
 export default handler;

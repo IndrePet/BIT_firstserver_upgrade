@@ -17,10 +17,38 @@ handler._method = {};
  */
 handler._method.get = async (data, callback) => {
   const url = data.trimmedPath;
+  const urlParts = url.split('/');
+  const num1 = +urlParts[3];
+  const num2 = +urlParts[4];
+  const operation = urlParts[2];
+
+  if (urlParts.length !== 5 || isNaN(num1) || isNaN(num2)) {
+    return callback(400, {
+      status: 'Error',
+      msg: 'Neteisingai pateikti skaiciai',
+    });
+  }
+
+  const math = {
+    suma: (a, b) => a + b,
+    skirtumas: (a, b) => a - b,
+    sandauga: (a, b) => a * b,
+    dalyba: (a, b) => a / b,
+  };
+
+  if (!math[operation]) {
+    return callback(400, {
+      status: 'Error',
+      msg: 'Netinkama operacija',
+    });
+  }
+
+  const ans = math[operation](num1, num2);
 
   return callback(200, {
-    status: 'Success',
-    msg: 'Matematika nera jega',
+    first: num1,
+    second: num2,
+    result: ans,
   });
 };
 

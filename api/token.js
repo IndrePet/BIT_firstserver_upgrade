@@ -169,7 +169,7 @@ handler._method.getUserDetails = async token => {
   }
 
   const tokenObj = utils.parseJSONtoObject(readContent);
-  if (!obj) {
+  if (!tokenObj) {
     return {};
   }
 

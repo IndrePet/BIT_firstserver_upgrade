@@ -96,6 +96,23 @@ handler._method.get = async (data, callback) => {
   const url = data.trimmedPath;
   const blogSlug = url.split('/')[2];
 
+  let [err, content] = await file.read('blog', blogSlug + '.json');
+  if (err) {
+    return callback(200, {
+      status: 'Error',
+      msg: "Nepavyko rasti norimo blog'o iraso",
+    });
+  }
+  console.log(content);
+
+  content = utils.parseJSONtoObject(content);
+  if (!content) {
+    return callback(200, {
+      status: 'Error',
+      msg: 'Nepavyko apdoroti blog post turinio',
+    });
+  }
+
   return callback(200, {
     status: 'Success',
     msg: content,

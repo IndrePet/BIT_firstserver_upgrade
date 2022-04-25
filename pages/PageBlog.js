@@ -43,7 +43,7 @@ class PageBlog extends PageTemplate {
       data.push(obj);
     }
 
-    return data;
+    return data.sort((a, b) => b.lastUpdated - a.lastUpdated);
   };
 
   async blogListHTML() {

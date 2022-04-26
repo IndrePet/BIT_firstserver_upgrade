@@ -60,7 +60,7 @@ class PageBlog extends PageTemplate {
                         <div class="post-description">${this.shortenText(
                           post.content
                         )}</div>
-                        <a href="./${post.slug}"class="read-more">
+                        <a href="./blog/${post.slug}"class="read-more">
                             Read more<i class="icon fa fa-angle-right"></i>
                         </a>
                     </div>`;

@@ -1,5 +1,8 @@
 import { PageTemplate } from '../lib/PageTemplate.js';
 
+import { file } from '../lib/file.js';
+import { utils } from '../lib/utils.js';
+
 class PageBlogPost extends PageTemplate {
   /**
    * Sabloninio puslapio konstruktorius.
@@ -9,6 +12,24 @@ class PageBlogPost extends PageTemplate {
   constructor(data) {
     super(data);
     this.pageCSSfileName = 'blog-post';
+  }
+
+  async getPostData() {
+    const url = this.data.trimmedPath.split('/')[1];
+    const content = await file.read('blog', url + '.json');
+    const blogPost = utils.parseJSONtoObject(content[1]);
+    const user = await file.read('accounts', blogPost.author + '.json');
+    const userName = utils.parseJSONtoObject(user[1]);
+    blogPost['name'] = userName.username;
+
+    return blogPost;
+  }
+
+  isValidPost(post) {
+    if (post.title === '' || post.content === '') {
+      return false;
+    }
+    return true;
   }
 
   badPostHTML() {
@@ -22,28 +43,17 @@ class PageBlogPost extends PageTemplate {
     return `<section class="container blog-inner">
                     <h1 class="row title">${post.title}</h1>
                     <p class="row">${post.content}</p>
-                    <footer class="row">Author</footer>
+                    <footer class="row">${post.name}</footer>
                 </section>`;
   }
 
-  isValidPost(post) {
-    if (typeof post !== 'object' || Array.isArray(post) || post === null) {
-      return false;
-    }
-    return true;
-  }
-
-  mainHTML() {
-    if (false) {
-      return this.correctPostHTML();
+  async mainHTML() {
+    const postData = await this.getPostData();
+    if (this.isValidPost(postData)) {
+      return this.correctPostHTML(postData);
     } else {
       return this.badPostHTML();
     }
-    // if (this.isValidPost(postData)) {
-    //     return this.correctPostHTML(postData);
-    // } else {
-    //     return this.badPostHTML();
-    // }
   }
 }
 

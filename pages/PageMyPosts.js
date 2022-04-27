@@ -15,18 +15,15 @@ class PageMyPosts extends PageTemplate {
   }
 
   emptyListHTML() {
-    return `<div class="row empty-list">Looks like your blog list is empty right now 🤔👀😭</div>`;
+    return `<div class="row empty-list">Looks like you haven't posted anything yet 🤔👀😭</div>`;
   }
 
-  getPostData = async () => {
+  getBlogData = async () => {
     const data = [];
-    const [err, blogPosts] = await file.list('blog');
-    if (err) {
-      return data;
-    }
+    const list = this.data.user.postsSlugList;
 
-    for (const post of blogPosts) {
-      const [err, content] = await file.read('blog', post);
+    for (const post of list) {
+      const [err, content] = await file.read('blog', post + '.json');
       if (post[0] === '.') {
         continue;
       }
@@ -43,57 +40,59 @@ class PageMyPosts extends PageTemplate {
       data.push(obj);
     }
 
-    return [];
+    return data.sort((a, b) => b.lastUpdated - a.lastUpdated);
   };
 
-  async blogListHTML() {
-    const renderList = async () => {
-      const postFileName = await this.getPostData();
-      if (postFileName.length === 0) {
-        return this.emptyListHTML();
-      }
+  emptyListHTML() {
+    return `<div class="row empty-list">Looks like blog list is empty right now 🤔👀😭</div>`;
+  }
 
-      let HTML = '';
-      for (const post of postFileName) {
-        HTML += `<div class="post">
+  blogListHTML(data) {
+    let HTML = '';
+
+    for (const post of data) {
+      HTML += `<div class="post">
+                        <div class="post-edit">
+                          <a href="/post-edit"><i class="fa fa-edit"></i></a>
+                          <a href="#"><i class="fa fa-trash"></i></a>
+                        </div>
                         <h2 class="post-title">${post.title}</h2>
                         <div class="post-description">${this.shortenText(
                           post.content
                         )}</div>
-                        <a href="./blog/${post.slug}"class="read-more">
-                            Read more<i class="icon fa fa-angle-right"></i>
-                        </a>
+                        <a href="/blog/${
+                          post.slug
+                        }" class="read-more">Read more<i class="icon fa fa-angle-right"></i></a>
                     </div>`;
-      }
-      return HTML;
-    };
+    }
 
-    return `<div class="row list">
-                    ${await renderList()}   
-            </div>`;
+    return `<div class="row list">${HTML}</div>`;
   }
 
   shortenText(text) {
-    const textArray = text.split(' ');
-    const arr = [];
-
-    for (const word of textArray) {
-      if (arr.join(' ').length > 100) {
-        break;
-      }
-
-      arr.push(word);
+    const limit = 100;
+    const hardLimit = 130;
+    if (text.length < hardLimit) {
+      return text;
     }
 
-    const shortDsc = arr.join(' ');
+    let partText = text.slice(0, limit);
+    partText = partText.split('').reverse().join('');
+    partText = partText.slice(partText.indexOf(' ') + 1);
+    partText = partText.split('').reverse().join('');
 
-    return text.length < 100 ? text : shortDsc + '...';
+    return partText + '...';
   }
 
   async mainHTML() {
+    const blogFiles = await this.getBlogData();
     return `<section class="container blog-list">
                     <h1 class="row title">My blog</h1>
-                    ${await this.blogListHTML()}
+                    ${
+                      blogFiles.length === 0
+                        ? this.emptyListHTML()
+                        : this.blogListHTML(blogFiles)
+                    }
                 </section>`;
   }
 }

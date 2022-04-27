@@ -79,6 +79,24 @@ handler._method.post = async (data, callback) => {
     });
   }
 
+  const updatedUser = { ...data.user };
+  delete updatedUser.isLoggedIn;
+
+  updatedUser.postsSlugList.push(post.slug);
+
+  const [updateError] = await file.update(
+    'accounts',
+    data.user.email + '.json',
+    updatedUser
+  );
+
+  if (updateError) {
+    return callback(200, {
+      status: 'Error',
+      msg: 'Nepavyko atnaujinti vartotojo paskyros',
+    });
+  }
+
   return callback(200, {
     status: 'Success',
     msg: 'Blog post sukurtas sekmingai',
@@ -103,7 +121,6 @@ handler._method.get = async (data, callback) => {
       msg: "Nepavyko rasti norimo blog'o iraso",
     });
   }
-  console.log(content);
 
   content = utils.parseJSONtoObject(content);
   if (!content) {
@@ -139,9 +156,44 @@ handler._method.delete = async (data, callback) => {
   const url = data.trimmedPath;
   const blogSlug = url.split('/')[2];
 
+  if (!data.user.postsSlugList.includes(blogSlug)) {
+    return callback(400, {
+      status: 'Error',
+      msg: 'Vartotojas neturi tokio straipsnio',
+    });
+  }
+
+  const [deleteErr] = await file.delete('blog', blogSlug + '.json');
+  if (deleteErr) {
+    return callback(500, {
+      status: 'Error',
+      msg: 'Nepavyko istrinti blog post',
+    });
+  }
+
+  const updatedUser = { ...data.user };
+  delete updatedUser.isLoggedIn;
+
+  updatedUser.postsSlugList = updatedUser.postsSlugList.filter(
+    slug => slug !== blogSlug
+  );
+
+  const [updateError] = await file.update(
+    'accounts',
+    data.user.email + '.json',
+    updatedUser
+  );
+
+  if (updateError) {
+    return callback(500, {
+      status: 'Error',
+      msg: 'Nepavyko atnaujinti vartotojo paskyros',
+    });
+  }
+
   return callback(200, {
     status: 'Success',
-    msg: 'Blog post sekmingai istrinta is sistemos',
+    msg: 'Blog post sekmingai istrintas is sistemos',
   });
 };
 
